@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>TOPMET Dashboard - Check</title>
+<style>
+body { background:#0b0e13; color:#d7e1ec; font-family:monospace; padding:20px; }
+.card { border:1px solid #1e2a38; border-radius:10px; padding:14px; margin-bottom:14px; }
+.ok { color:#34d399; } .err { color:#f87171; }
+</style>
+</head>
+<body> 
+<h1>TOPMET Runtime Check</h1>
+<div class="card" id="js">loading...</div>
+<div class="card" id="data">loading...</div>
+<div class="card" id="charts">loading...</div>
+<script src="chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+var out = {};
+out.js = (typeof Chart !== 'undefined') ? 'Chart.js OK v' + Chart.version : 'Chart.js MISSING';
+try {
+  out.data = 'TOPMET_DATA OK: ' + Object.keys(window.TOPMET_DATA.meta).length + ' mesin, trials: ' + Object.keys(window.TOPMET_DATA.data.Metz1).join(',');
+  var d = window.TOPMET_DATA.data.Metz1.trial1;
+  out.data += ' | Metz1 t1: ' + d.times.length + ' titik, komponen: ' + Object.keys(d.komponen).length + ', tekanan: ' + Object.keys(d.tekanan).length;
+} catch (e) { out.data = 'DATA ERROR: ' + e.message; }
+
+// verify every series exists for rendering paths
+try {
+  var miss = [];
+  ['Metz1','Metz2','Metz3','Metz4'].forEach(function(m){
+    ['trial1','trial2'].forEach(function(t){
+      var dd = window.TOPMET_DATA.data[m][t];
+      ['coating','winding','line','diff'].forEach(function(which){
+        var picks = {
+          coating: ['Coating Chamber (mbar)', 'Press. Coating Ch. [cc] (mbar)'],
+          winding: ['Winding Chamber (mbar)', 'Press. Winding Ch. [wc] (mbar)'],
+          line: ['Line (mbar)', 'Press. Prevac Diff-Pumps [line] (mbar)'],
+          diff: ['Diff Pump (mbar)']
+        };
+        var found = picks[which].some(function(k){ return dd.tekanan[k]; });
+        if (!found) miss.push(m + '/' + t + '/' + which);
+      });
+    });
+  });
+  out.charts = miss.length ? 'MISSING SERIES: ' + miss.join(', ') : 'Semua series tekanan tersedia';
+} catch (e) { out.charts = 'CHART DATA ERROR: ' + e.message; }
+
+document.getElementById('js').textContent = 'JS: ' + out.js;
+document.getElementById('data').textContent = 'DATA: ' + out.data;
+document.getElementById('charts').textContent = 'SERIES: ' + out.charts;
+</script>
+</body>
+</html>

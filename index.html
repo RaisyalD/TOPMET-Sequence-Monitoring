@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOPMET Machine Monitoring Dashboard</title>
+<meta name="description" content="Dashboard monitoring industri untuk mesin TOPMET Metz 1-4: sequence analysis, pressure trend, trial comparison, dan maintenance insights.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">TM</div>
+    <div>
+      <h1>TOPMET <span>Machine Monitoring Dashboard</span></h1>
+      <p>Metallizer Vacuum System · Metz 1 s.d. 4 · Sequence &amp; Trial Analysis</p>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="status-pill"><span class="dot"></span> Data Sequence Tervalidasi</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+ 
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="overview">Machine Overview</button>
+  <button class="tab" data-tab="sequence">Sequence Analysis</button>
+  <button class="tab" data-tab="pressure">Pressure Trend</button>
+  <button class="tab" data-tab="trial">Trial Comparison</button>
+  <button class="tab" data-tab="performance">Machine Performance</button>
+  <button class="tab" data-tab="component">Component Monitoring</button>
+  <button class="tab" data-tab="maintenance">Maintenance Insights</button>
+</nav>
+
+<main id="views">
+ 
+  <!-- ===================== OVERVIEW ===================== -->
+  <section class="view active" id="view-overview">
+    <div class="grid kpi-grid" id="kpiGrid"></div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Ranking Kondisi Mesin</h2>
+        <div id="rankChart"><canvas></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Tekanan Coating Akhir (mbar)</h2>
+        <div id="coatingFinalChart"><canvas></canvas></div>
+        <p class="note">Garis putus-putus = target proses 4.0E-4 mbar</p>
+      </div>
+      <div class="card">
+        <h2>Waktu ke 4.0E-4 mbar (s)</h2>
+        <div id="time4e4Chart"><canvas></canvas></div>
+        <p class="note">Makin cepat makin baik</p>
+      </div>
+      <div class="card">
+        <h2>Tekanan Foreline Akhir (mbar)</h2>
+        <div id="forelineChart"><canvas></canvas></div>
+        <p class="note">Indikator kesehatan pompa difusi</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SEQUENCE ===================== -->
+  <section class="view" id="view-sequence">
+    <div class="card">
+      <h2>Timeline Aktivitas Komponen</h2>
+      <div class="controls">
+        <label>Mesin
+          <select id="seqMachine"></select>
+        </label>
+        <label>Trial
+          <select id="seqTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select>
+        </label>
+      </div>
+      <div id="seqChart"><canvas></canvas></div>
+      <p class="note">Bar = status ON/OFF komponen sepanjang siklus. Latar abu = Low Vacuum, biru = High Vacuum, oranye = Heating Boat. Sumbu X = detik.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Durasi Aktif Komponen</h2>
+        <div class="controls">
+          <label>Mesin <select id="dutyMachine"></select></label>
+          <label>Trial <select id="dutyTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select></label>
+        </div>
+        <div id="dutyChart"><canvas></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Waktu Transisi Kunci</h2>
+        <div class="table-wrap"><table id="transitionTable"></table></div>
+        <p class="note">Waktu (detik) perubahan status komponen utama. Data asli rekaman sequence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRESSURE ===================== -->
+  <section class="view" id="view-pressure">
+    <div class="card">
+      <h2>Tren Tekanan Chamber (Skala Logaritmik)</h2>
+      <div class="controls">
+        <label>Mesin <select id="presMachine"></select></label>
+        <label>Trial <select id="presTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select></label>
+        <label>Chamber
+          <select id="presSeries">
+            <option value="coating">Coating Chamber</option>
+            <option value="winding">Winding Chamber</option>
+            <option value="line">Foreline / Backing</option>
+            <option value="diff">Diff Pump</option>
+          </select>
+        </label>
+      </div>
+      <div id="presChart"><canvas></canvas></div>
+      <p class="note">Sumbu Y logaritmik (mbar). Di bawah 1E-4 = zona vakum proses.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Profil Tekanan Semua Mesin (Coating)</h2>
+        <div class="controls">
+          <label>Trial <select id="presAllTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select></label>
+        </div>
+        <div id="presAllChart"><canvas></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Nilai Tekanan Kunci</h2>
+        <div class="table-wrap"><table id="pressureTable"></table></div>
+        <p class="note">Kondisi tunak = nilai terakhir terekam. Puncak foreline = beban backing maksimum.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TRIAL ===================== -->
+  <section class="view" id="view-trial">
+    <div class="card">
+      <h2>Perbandingan Trial 1 vs Trial 2</h2>
+      <div class="controls">
+        <label>Mesin <select id="cmpMachine"></select></label>
+      </div>
+      <div class="grid cols-3">
+        <div class="mini-stat"><span class="mini-label">Durasi T1</span><span class="mini-value" id="cmpDurT1">-</span></div>
+        <div class="mini-stat"><span class="mini-label">Durasi T2</span><span class="mini-value" id="cmpDurT2">-</span></div>
+        <div class="mini-stat"><span class="mini-label">Δ Durasi</span><span class="mini-value" id="cmpDurDelta">-</span></div>
+        <div class="mini-stat"><span class="mini-label">Coat Final T1</span><span class="mini-value" id="cmpCoatT1">-</span></div>
+        <div class="mini-stat"><span class="mini-label">Coat Final T2</span><span class="mini-value" id="cmpCoatT2">-</span></div>
+        <div class="mini-stat"><span class="mini-label">t 4E-4 T1</span><span class="mini-value" id="cmpTimeT1">-</span></div>
+        <div class="mini-stat"><span class="mini-label">t 4E-4 T2</span><span class="mini-value" id="cmpTimeT2">-</span></div>
+        <div class="mini-stat"><span class="mini-label">Foreline T1</span><span class="mini-value" id="cmpLineT1">-</span></div>
+        <div class="mini-stat"><span class="mini-label">Foreline T2</span><span class="mini-value" id="cmpLineT2">-</span></div>
+      </div>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Tren Coating Trial 1 vs Trial 2</h2>
+        <div id="cmpChart"><canvas></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Perbedaan Timeline (Transisi Kunci)</h2>
+        <div class="table-wrap"><table id="cmpTable"></table></div>
+        <p class="note">Trial 2 adalah penyesuaian estimasi timeline (foto HMI hanya memuat setpoint trigger), tekanan akhir tidak berubah.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PERFORMANCE ===================== -->
+  <section class="view" id="view-performance">
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Skor Kesehatan Mesin (0-100)</h2>
+        <div id="perfScoreChart"><canvas></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Radar Kinerja</h2>
+        <div class="controls">
+          <label>Mesin <select id="radarMachine"></select></label>
+          <label>Trial <select id="radarTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select></label>
+        </div>
+        <div id="radarChartWrap"><canvas></canvas></div>
+      </div>
+      <div class="card span-2">
+        <h2>Kesimpulan &amp; Rekomendasi Per Mesin</h2>
+        <div id="perfVerdicts"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COMPONENT ===================== -->
+  <section class="view" id="view-component">
+    <div class="card">
+      <h2>Status &amp; Duty Cycle Komponen</h2>
+      <div class="controls">
+        <label>Mesin <select id="compMachine"></select></label>
+        <label>Trial <select id="compTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select></label>
+      </div>
+      <div class="table-wrap"><table id="compTable"></table></div>
+      <p class="note">Duty cycle = persentase waktu ON terhadap durasi siklus. Transisi = jumlah perubahan status.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h2>Duty Cycle (%) per Komponen</h2>
+        <div id="compDutyChart"><canvas></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Parameter Pendukung (Foto HMI)</h2>
+        <div class="table-wrap"><table id="hmiTable"></table></div>
+        <p class="note">Dibaca dari foto HMI trial 1 dan trial 2. Nilai aktual saat perekaman.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MAINTENANCE ===================== -->
+  <section class="view" id="view-maintenance">
+    <div class="card">
+      <h2>Indikator Anomali &amp; Rekomendasi Inspeksi</h2>
+      <div id="anomalyList"></div>
+      <p class="note">Semua indikator diturunkan dari data sequence tervalidasi, bukan asumsi. Rekomendasi = saran inspeksi, bukan diagnosis final.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>TOPMET Machine Monitoring Dashboard · Sumber: Sequence Metz 1-4 (trial 1 &amp; trial 2) · Skor &amp; rekomendasi = alat bantu prioritas maintenance, bukan pengganti pemeriksaan fisik.</p>
+</footer>
+
+<script src="chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
