@@ -900,9 +900,6 @@
     add('info', 'Metz 2 = benchmark terbaik', 'Coating akhir 2.20E-4 mbar, foreline 0.145 mbar, winding 2.10E-2 mbar, tanpa lonjakan tekanan. Skor kesehatan 95.1/100 (tertinggi).', 'Jadikan baseline pembanding untuk audit mesin lain dan evaluasi perbaikan.', 'Metz2');
     // 7. Metz1 good
     add('info', 'Metz 1 stabil dan cepat', 'Waktu ke 4.0E-4 = 550 s (tercepat), coating akhir 2.42E-4, tanpa lonjakan. Skor 92.2/100.', 'Tidak ada tindakan darurat; pertahankan interval maintenance preventif normal.', 'Metz1');
-    // 8. Trial2 caveat
-    add('info', 'Catatan data Trial 2', 'Trial 2 dibuat dari transformasi timeline (breakpoint fase) karena foto HMI trial 2 hanya memuat setpoint trigger, bukan waktu aktual. Tekanan akhir dan setpoint tidak berubah: Metz 1 2.42E-4, Metz 2 2.20E-4, Metz 3 4.0E-4, Metz 4 3.9E-4 mbar. Metz 4 adalah satu-satunya yang dipercepat (3060 ke 2800 s).', 'Perbarui dengan data HMI/trend recorder asli bila tersedia; analisis di dashboard memakai data tervalidasi yang ada.', 'Semua');
-
     box.innerHTML = '';
     items.forEach(function (it) {
       box.insertAdjacentHTML('beforeend',

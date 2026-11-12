@@ -215,12 +215,20 @@
       <div id="anomalyList"></div>
       <p class="note">Semua indikator diturunkan dari data sequence tervalidasi, bukan asumsi. Rekomendasi = saran inspeksi, bukan diagnosis final.</p>
     </div>
+    <div class="card">
+      <h2>INFO &ndash; Machine Health Score Calculation</h2>
+      <p>Machine Health Score (0&ndash;100) dihitung menggunakan metode <strong>Weighted Sum Model (WSM)</strong> dengan <strong>Min-Max Normalization</strong>. Perhitungan menggabungkan enam indikator utama, yaitu Coating Final Pressure (35%), Foreline Pressure (25%), Pressure Stability (20%), Pump-down Time to Target (10%), Crossover Time (5%), dan Time to 100 mbar (5%).</p>
+      <p>Setiap indikator dinormalisasi ke skala 0&ndash;1 berdasarkan nilai minimum dan maksimum data pembanding, kemudian dikalikan dengan bobot masing-masing untuk menghasilkan skor akhir dalam skala 0&ndash;100.</p>
+      <p>Skor yang lebih tinggi menunjukkan performa relatif lebih baik berdasarkan indikator dan kelompok mesin yang dibandingkan. Hasil ini merupakan evaluasi komparatif, bukan diagnosis kesehatan mesin secara absolut. Validitas skor bergantung pada kelengkapan data, konsistensi kondisi pengujian, dan ketepatan parameter acuan.</p>
+      <p class="note"><strong>Note:</strong> Skor digunakan sebagai alat bantu evaluasi performa dan prioritas inspeksi maintenance. Seluruh indikasi tetap memerlukan verifikasi teknis oleh personel engineering atau maintenance.</p>
+    </div>
   </section>
 
 </main>
 
 <footer>
   <p>TOPMET Machine Monitoring Dashboard · Sumber: Sequence Metz 1-4 (trial 1 &amp; trial 2) · Skor &amp; rekomendasi = alat bantu prioritas maintenance, bukan pengganti pemeriksaan fisik.</p>
+  <p>© 2026 Raisyal Dimas Prayoga. All rights reserved.</p>
 </footer>
 
 <script src="chart.umd.min.js"></script>
