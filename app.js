@@ -936,6 +936,10 @@
 
   // ---------- init ----------
   function init() {
+    D = window.TOPMET_DATA || D;
+    META = D.meta;
+    FASE = D.fase;
+    DATA = D.data;
     // selects
     fillSelect($('seqMachine'), MACHINES, function (m) { return META[m].nama; });
     fillSelect($('dutyMachine'), MACHINES, function (m) { return META[m].nama; });
@@ -977,5 +981,5 @@
     renderMaintenance();
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  window.TOPMET_startDashboard = init;
 })();

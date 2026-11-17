@@ -158,3 +158,28 @@ This dashboard is developed for machine sequence analysis, operational data visu
 **TOPMET Machine Monitoring Dashboard**
 
 *Bridging Industrial Systems with Digital Technology.*
+
+## Supabase Stage 1 setup
+
+1. Create a Supabase project and enable Email/Password authentication (invite users
+   from the Supabase dashboard). Apply
+   `supabase/migrations/202611170001_topmet_foundation.sql` in the SQL editor.
+2. The browser uses only the publishable/anon key in `supabase-config.js`. Never put
+   a service-role key in this repository or frontend. Keep RLS enabled; all CRUD
+   policies require an authenticated user.
+3. The original `data.js` remains the migration source. To produce an offline seed
+   file, run `node scripts/import-data.js > seed.sql`, inspect it, and apply it
+   manually in Supabase. The script does not make network writes and normalizes
+   pressure channel names.
+4. Serve the folder from a local web server (for example `npx serve .`). Open
+   `register.html` to create an account, then use `login.html` to sign in.
+   `index.html` is the protected dashboard and redirects unauthenticated users
+   back to `login.html`.
+5. The dashboard editor lets an authenticated user select a machine, trial,
+   sequence time point, component, and ON/OFF value, or a pressure channel and
+   pressure value. Saving updates Supabase; Realtime refreshes other dashboard
+   sessions automatically. The existing seven dashboard menus remain driven by
+   the latest loaded data.
+
+When the database has no rows, the authenticated dashboard falls back to the
+unchanged local `data.js` values, preserving the existing scoring baseline.

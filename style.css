@@ -33,6 +33,57 @@ body {
   line-height: 1.5;
   min-height: 100vh;
 }
+.auth-gate { min-height: 100vh; display: grid; place-items: center; padding: 20px; }
+.auth-card { width: min(420px, 100%); background: linear-gradient(180deg,var(--panel),var(--panel2)); border: 1px solid var(--line); border-radius: 12px; padding: 28px; box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+.auth-card .logo { margin-bottom: 16px; }
+.auth-card h1 { font-size: 20px; margin-bottom: 8px; }.auth-card h1 span { color: var(--accent); font-weight: 500; }
+.auth-card p { color: var(--muted); font-size: 13px; margin-bottom: 18px; }.auth-card label { display:block; color:var(--muted); font-size:12px; margin:12px 0; }
+.auth-card input { display:block; width:100%; margin-top:5px; background:#0c121b; color:var(--txt); border:1px solid var(--line2); border-radius:8px; padding:9px; }
+.auth-card button, .admin-panel button { background:var(--accent); color:#06212a; border:0; border-radius:7px; padding:9px 14px; font-weight:700; cursor:pointer; }
+.auth-actions { display:flex; gap:8px; margin-top:14px; }
+.secondary-button { background:transparent !important; color:var(--accent) !important; border:1px solid var(--line2) !important; }
+.auth-error { color:var(--red) !important; min-height:18px; margin:10px 0 0 !important; }
+.auth-success { color:var(--green) !important; min-height:18px; margin:10px 0 0 !important; }
+.auth-link { margin-top:16px !important; text-align:center; }
+.auth-link a { color:var(--accent); }
+.admin-panel .controls input, .admin-panel .controls select { background:#0c121b; color:var(--txt); border:1px solid var(--line2); border-radius:7px; padding:8px; }
+.admin-panel .controls label { display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
+.admin-panel ul { list-style:none; margin-top:12px; }
+.admin-panel li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--line); }
+.admin-panel li button { padding:5px 9px; font-size:12px; }
+.notice-toast {
+  position: fixed; right: 24px; bottom: 24px; z-index: 100;
+  display: flex; align-items: center; gap: 10px; min-width: 280px;
+  padding: 13px 16px; border: 1px solid var(--line2); border-left: 3px solid var(--accent);
+  border-radius: 10px; background: rgba(18,25,36,.96); color: var(--txt);
+  box-shadow: 0 12px 35px rgba(0,0,0,.4); transform: translateY(20px);
+  opacity: 0; pointer-events: none; transition: .2s ease;
+}
+.notice-toast.show { transform: none; opacity: 1; }
+.notice-toast.error { border-left-color: var(--red); }
+.notice-toast.success { border-left-color: var(--green); }
+.notice-icon {
+  display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px;
+  border-radius: 50%; background: rgba(34,211,238,.15); color: var(--accent);
+  font-family: var(--mono); font-weight: 700;
+}
+.notice-icon.warning { background: rgba(251,191,36,.15); color: var(--amber); }
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 110; display: grid; place-items: center;
+  padding: 20px; background: rgba(3,7,12,.72); backdrop-filter: blur(5px);
+}
+.modal-backdrop[hidden] { display: none; }
+.notice-modal {
+  display: flex; gap: 14px; width: min(460px, 100%); padding: 22px;
+  border: 1px solid var(--line2); border-radius: 14px;
+  background: linear-gradient(180deg,var(--panel),var(--panel2));
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.notice-modal h2 { font-size: 16px; margin-bottom: 6px; }
+.notice-modal p { display: block; min-height: 38px; color: var(--txt); font-size: 13px; line-height: 1.55; }
+.notice-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+.notice-actions button { background: var(--accent); color: #06212a; border: 0; border-radius: 7px; padding: 8px 13px; font-weight: 700; cursor: pointer; }
+.notice-actions .secondary-button { background: transparent; color: var(--accent); border: 1px solid var(--line2); }
 
 /* ---------- topbar ---------- */
 .topbar {
@@ -63,6 +114,8 @@ body {
   font-size: 12px; font-weight: 600;
 }
 .status-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+.status-pill.offline { border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.08); color: var(--amber); }
+.status-pill.offline .dot { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 .clock { font-family: var(--mono); font-size: 14px; color: var(--muted); }
 

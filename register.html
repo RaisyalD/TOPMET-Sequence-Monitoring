@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - TOPMET Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="auth-gate">
+  <section class="auth-card">
+    <div class="logo">TM</div>
+    <h1>TOPMET <span>Register</span></h1>
+    <p>Buat akun terlebih dahulu sebelum login.</p>
+    <form id="registerForm">
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Password<input name="password" type="password" minlength="6" required autocomplete="new-password"></label>
+      <label>Ulangi Password<input name="confirm_password" type="password" minlength="6" required autocomplete="new-password"></label>
+      <button type="submit">Daftar</button>
+      <p id="authMessage" class="auth-error"></p>
+    </form>
+    <p class="auth-link">Sudah punya akun? <a href="login.html">Login</a></p>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="supabase-client.js"></script>
+<script src="auth-page.js"></script>
+</body>
+</html>

@@ -22,6 +22,7 @@
   <div class="topbar-right">
     <div class="status-pill"><span class="dot"></span> Data Sequence Tervalidasi</div>
     <div class="clock" id="clock">--:--:--</div>
+    <button id="logoutButton" class="tab" hidden>Keluar</button>
   </div>
 </header>
  
@@ -36,6 +37,44 @@
 </nav>
 
 <main id="views">
+  <section class="card admin-panel" id="adminPanel">
+    <h2>Edit Data Mesin</h2>
+    <div class="controls">
+      <label>Mesin<select id="editMachine"></select></label>
+      <label>Trial<select id="editTrial"><option value="trial1">Trial 1</option><option value="trial2">Trial 2</option></select></label>
+      <label>Jenis data<select id="editKind"><option value="sequence">Sequence &amp; komponen</option><option value="pressure">Vacuum pressure</option><option value="score">Machine Health Score</option></select></label>
+      <button type="button" id="seedBaselineButton" class="secondary-button">Muat Data Baseline</button>
+    </div>
+    <div id="sequenceEditor">
+      <form id="sequenceEditForm" class="controls">
+        <label>Titik waktu<select name="sample_id"></select></label>
+        <label>Waktu (detik)<input name="time_seconds" type="number" step="any" required></label>
+        <label>Komponen<select name="component_id"></select></label>
+        <label>Status<select name="state"><option value="false">OFF / 0</option><option value="true">ON / 1</option></select></label>
+        <button type="submit">Simpan Sequence</button>
+      </form>
+    </div>
+    <div id="pressureEditor" hidden>
+      <form id="pressureEditForm" class="controls">
+        <label>Titik waktu<select name="sample_id"></select></label>
+        <label>Waktu (detik)<input name="time_seconds" type="number" step="any" required></label>
+        <label>Channel<select name="channel_id"></select></label>
+        <label>Pressure (mbar)<input name="value" type="number" step="any" required></label>
+        <button type="submit">Simpan Pressure</button>
+      </form>
+    </div>
+    <div id="scoreEditor" hidden>
+      <form id="scoreEditForm" class="controls">
+        <label>Score (0-100)<input name="score" type="number" min="0" max="100" step="0.1" required></label>
+        <label>Status<input name="status" type="text"></label>
+        <label>Ranking<input name="rank" type="number" min="1" step="1"></label>
+        <button type="submit">Simpan Score</button>
+      </form>
+    </div>
+    <p id="adminError" class="auth-error"></p>
+    <p id="adminSuccess" class="auth-success"></p>
+    <p class="note">Pilih mesin, trial, waktu, komponen/channel, lalu simpan. Perubahan setiap angka disimpan langsung ke Supabase.</p>
+  </section>
  
   <!-- ===================== OVERVIEW ===================== -->
   <section class="view active" id="view-overview">
@@ -230,9 +269,31 @@
   <p>TOPMET Machine Monitoring Dashboard · Sumber: Sequence Metz 1-4 (trial 1 &amp; trial 2) · Skor &amp; rekomendasi = alat bantu prioritas maintenance, bukan pengganti pemeriksaan fisik.</p>
   <p>© 2026 Raisyal Dimas Prayoga. All rights reserved.</p>
 </footer>
-
+<div class="notice-toast" id="noticeToast" role="status" aria-live="polite">
+  <span class="notice-icon" id="noticeIcon">i</span>
+  <span id="noticeText"></span>
+</div>
+<div class="modal-backdrop" id="confirmModal" hidden>
+  <section class="notice-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <span class="notice-icon warning">!</span>
+    <div>
+      <h2 id="confirmTitle">Konfirmasi perubahan</h2>
+      <p id="confirmText">Data baseline Metz 1-4 akan dimuat ke Supabase.</p>
+      <div class="notice-actions">
+        <button type="button" class="secondary-button" id="confirmCancel">Batal</button>
+        <button type="button" id="confirmAccept">Lanjutkan</button>
+      </div>
+    </div>
+  </section>
+</div>
 <script src="chart.umd.min.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="supabase-client.js"></script>
+<script src="data-service.js"></script>
+<script src="admin.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>
